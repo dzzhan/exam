@@ -119,6 +119,72 @@ double myPow(double x, long long n) {
 	return 1.0;
 }
 
+int DfsSearch(char* W, char* MAP, int M, int N, int L, int S, int Founded, int* Visited)
+{
+	if (Founded == L) {
+		return 1;
+	}
+	int i = S >> 16;
+	int j = S & 0xffff;
+
+	int tmp = (i - 1) * N + j;
+	if ((i > 0) && (Visited[tmp] == 0) && (MAP[tmp] == W[S])) {
+		Visited[tmp] = 1;
+		if (1 == DfsSearch(W, MAP, M, N, L, ((i - 1) << 16) + j, Founded + 1, Visited)) {
+			return 1;
+		}
+		Visited[tmp] = 0;
+	}
+
+	tmp = (i + 1) * N + j;
+	if ((i < (M - 1)) && (Visited[tmp] == 0) && (MAP[tmp] == W[S])) {
+		Visited[tmp] = 1;
+		if (1 == DfsSearch(W, MAP, M, N, L, ((i + 1) << 16) + j, Founded + 1, Visited)) {
+			return 1;
+		}
+		Visited[tmp] = 0;
+	}
+
+	tmp = i * N + j - 1;
+	if ((j > 0) && (Visited[tmp] == 0) && (MAP[tmp] == W[S])) {
+		Visited[tmp] = 1;
+		if (1 == DfsSearch(W, MAP, M, N, L, (i << 16) + (j - 1), Founded + 1, Visited)) {
+			return 1;
+		}
+		Visited[tmp] = 0;
+	}
+
+	tmp = i * N + j + 1;
+	if ((i < (M - 1)) && (Visited[tmp] == 0) && (MAP[tmp] == W[S])) {
+		Visited[tmp] = 1;
+		if (1 == DfsSearch(W, MAP, M, N, L, (i << 16) + (j + 1), Founded + 1, Visited)) {
+			return 1;
+		}
+		Visited[tmp] = 0;
+	}
+}
+
+int SolveWordMaze(char* W, char* MAP, int M, int N)
+{
+	int i = 0;
+	int j = 0;
+	int L = strlen(W);
+	int* VisitedPath = (int*)malloc(M * N * sizeof(int));
+	memset(VisitedPath, 0, sizeof(int) * M * N);
+	for (i = 0; i < M; i++) {
+		for (j = 0; j < N; j++) {
+			if (W[0] == MAP[(i * N) + j]) {
+				VisitedPath[i * N + j] = 1;
+				if (1 == DfsSearch(W, MAP, M, N, L, (i << 16) + j, 1, VisitedPath)) {
+					return 1;
+				}
+				VisitedPath[i * N + j] = 0;
+			}
+		}
+	}
+	return 0;
+}
+
 int main()
 {
 	int s[] = { 1, 2, 4, 3, 8, 9 };

@@ -457,6 +457,17 @@ int calcSize(int* height, int leftPos, int rightPos) {
 	return size;
 }
 
+int maxThanLeft(int* height, int heightSize, int pos) {
+	int i = 0;
+	for (i = pos + 1; i < heightSize; i++) {
+		if (height[i] > height[pos]) {
+			return 0;
+		}
+	}
+
+	return 1;
+}
+
 int trap(int* height, int heightSize) {
 	int total = 0;
 	int i = 0;
@@ -478,21 +489,19 @@ int trap(int* height, int heightSize) {
 			bottomPos = i;
 		}
 		if ((height[i] > bottomHeight) && (leftHeight > bottomHeight) && (leftPos < bottomPos)) {
-			size = calcSize(height, leftPos, i);
-			rightHeight = height[i];
-			rightPos = i;
+			if ((height[i] >= rightHeight) && (i > rightPos)) {
+				size = calcSize(height, leftPos, i);
+				rightHeight = height[i];
+				rightPos = i;
+			}
 		}
-		if (height[i] >= leftHeight) {
+		if ((height[i] >= leftHeight) || maxThanLeft(height, heightSize, i)) {
 			leftHeight = height[i];
 			leftPos = i;
+			rightHeight = 0;
+			rightPos = 0;
 			total += size;
 			size = 0;
-		}
-		else if (height[i] < rightHeight) {
-			total += size;
-			size = 0;
-			leftHeight = rightHeight;
-			leftPos = rightPos;
 		}
 	}
 	total += size;
@@ -528,4 +537,16 @@ TEST_F(ExamCodeTest, trap_test4) {
 	int height[] = { 4,3,3,9,3,0,9,2,8,3 };
 	int total = trap(height, sizeof(height) / sizeof(height[0]));
 	EXPECT_EQ(total, 23);
+}
+
+TEST_F(ExamCodeTest, trap_test5) {
+	int height[] = { 9,6,8,8,5,6,3 };
+	int total = trap(height, sizeof(height) / sizeof(height[0]));
+	EXPECT_EQ(total, 3);
+}
+
+TEST_F(ExamCodeTest, trap_test6) {
+	int height[] = { 3,6,5,8,8,6,9 };
+	int total = trap(height, sizeof(height) / sizeof(height[0]));
+	EXPECT_EQ(total, 3);
 }

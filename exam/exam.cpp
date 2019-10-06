@@ -3,7 +3,10 @@
 
 #include "pch.h"
 #include <iostream>
+#include "gtest/gtest.h"
 using namespace std;
+
+typedef testing::Test ExamCodeTest;
 
 void Swap(int* a, int* b) {
 	int tmp = *a;
@@ -162,6 +165,8 @@ int DfsSearch(char* W, char* MAP, int M, int N, int L, int S, int Founded, int* 
 		}
 		Visited[tmp] = 0;
 	}
+
+	return 0;
 }
 
 int SolveWordMaze(char* W, char* MAP, int M, int N)
@@ -185,12 +190,342 @@ int SolveWordMaze(char* W, char* MAP, int M, int N)
 	return 0;
 }
 
-int main()
-{
-	int s[] = { 1, 2, 4, 3, 8, 9 };
-	//QuickSort(s, 0, (sizeof(s) / sizeof(int)) - 1);
-	HeapSort(s, (sizeof(s) / sizeof(int)));
 
-	int a[] = { 1, 2, 3, 4, 5 };
-	Permutation(a, 0, 4);
+
+char * licenseKeyFormatting(char * S, int K) {
+	int len = strlen(S);
+	int i = 0;
+	int j = 0;
+	int pad = 0;
+	int sep = 0;
+	char* ss = (char*)malloc(len + 1);
+
+	for (i = 0; i < len; i++) {
+		if ((S[i] >= 'a') && (S[i] <= 'z')) {
+			S[j] = S[i] - 'a' + 'A';
+			j++;
+		}
+		else if (S[i] != '-') {
+			j++;
+		}
+	}
+	pad = j % K;
+	sep = (j + pad) / K;
+
+	j = pad;
+	for (i = 0; i < len; i++) {
+		if ((j != 0) && ((j % K) == 0)) {
+			ss[0] = '-';
+			ss++;
+		}
+		if (S[i] != '-') {
+			ss[0] = S[i];
+			ss++;
+			j++;
+		}
+	}
+
+	return ss;
+}
+
+#define MAX_STACK_SIZE 20000
+#define MAX_OP_STACK   10000
+#define IS_DIGITAL(x) (((x) >= '0') && ((x) <= '9'))
+#define OP_ADD -2
+#define OP_SUB -3
+
+int calculate(char * s) {
+	int stack[MAX_STACK_SIZE] = { -1 };
+	int top = -1;
+	int val = 0;
+	char opcode[MAX_OP_STACK] = {0};
+	int opTop = 0;
+	int optop = 0;
+	int i = 0;
+	int len = strlen(s);
+	int lastIsDigital = 0;
+	memset(stack, 0xff, sizeof(stack));
+	for (i = 0; i < len; i++) {
+		if (IS_DIGITAL(s[i])) {
+			if (lastIsDigital) {
+				val = val * 10 + (s[i] - '0');
+				stack[top] = val;
+			}
+			else {
+				top++;
+				val = s[i] - '0';
+				stack[top] = val;
+			}
+			lastIsDigital = 1;
+		}
+		else if (s[i] == '(') {
+			opcode[opTop] = s[i];
+			opTop++;
+			lastIsDigital = 0;
+		}
+		else if (s[i] == ')') {
+			while (opcode[opTop - 1] != '(') {
+				if (opcode[opTop - 1] == '+') {
+					stack[top - 1] += stack[top];
+					stack[top] = -1;
+					top -= 1;
+					//stack[top] = OP_ADD;
+					//top++;
+				}
+				else if (opcode[opTop - 1] == '-') {
+					stack[top - 1] -= stack[top];
+					stack[top] = -1;
+					top -= 1;
+					//stack[top] = OP_SUB;
+					//top++;
+				}
+				opcode[opTop - 1] = 0;
+				opTop--;
+			}
+			opcode[opTop - 1] = 0;
+			opTop--;
+			val = 0;
+			lastIsDigital = 0;
+		}
+		else if ((s[i] == '+') || (s[i] == '-')) {
+			if ((opTop > 0) && ((opcode[opTop - 1] == '+') || (opcode[opTop - 1] == '-'))) {
+				stack[top - 1] = (opcode[opTop - 1] == '+') ? (stack[top - 1] + stack[top]) : (stack[top - 1] - stack[top]);
+				stack[top] = -1;
+				top--;
+				val = 0;
+				opcode[opTop - 1] = 0;
+				opTop--;
+			}
+			opcode[opTop] = s[i];
+			opTop++;
+			lastIsDigital = 0;
+		}
+	}
+	opTop--;
+	while (opTop >= 0) {
+		stack[top - 1] = (opcode[opTop] == '+') ? (stack[top - 1] + stack[top]) : (stack[top - 1] - stack[top]);
+		stack[top] = -1;
+		top -= 1;
+		//stack[top] = opcode[opTop] == '+' ? OP_ADD : OP_SUB;
+		opTop--;
+	}
+	return stack[0];
+}
+
+char ** findMissingRanges(int* nums, int numsSize, int lower, int upper, int* returnSize) {
+	int i = 0;
+	int rangeCnt = 0;
+	long long rangeStart = -1;
+	long long rangeEnd = 0;
+	char** missingRange = (char**)malloc(sizeof(char*) * (numsSize + 10));
+	memset(missingRange, 0, sizeof(char*) * (numsSize + 10));
+
+	if (numsSize == 0) {
+		rangeStart = lower;
+		rangeEnd = upper;
+		if (rangeEnd == rangeStart) {
+			missingRange[rangeCnt] = (char*)malloc(sizeof(char) * 20);
+			sprintf(missingRange[rangeCnt], "%lld", rangeEnd);
+			rangeCnt++;
+			rangeStart = nums[0] + 1;
+		}
+		else if (rangeEnd > rangeStart) {
+			missingRange[rangeCnt] = (char*)malloc(sizeof(char) * 20);
+			sprintf(missingRange[rangeCnt], "%lld->%lld", rangeStart, rangeEnd);
+			rangeCnt++;
+			rangeStart = nums[0] + 1;
+		}
+		*returnSize = 1;
+		return missingRange;
+	}
+	else if ((numsSize == 2) && (lower == nums[0]) && (upper == nums[1])) {
+		*returnSize = 0;
+		return missingRange;
+	}
+
+	rangeStart = lower;
+	rangeEnd = nums[0] - 1;
+	if (rangeEnd == rangeStart) {
+		missingRange[rangeCnt] = (char*)malloc(sizeof(char) * 20);
+		sprintf(missingRange[rangeCnt], "%lld", rangeEnd);
+		rangeCnt++;
+		rangeStart = nums[0] + 1;
+	}
+	else if (rangeEnd > rangeStart) {
+		missingRange[rangeCnt] = (char*)malloc(sizeof(char) * 20);
+		sprintf(missingRange[rangeCnt], "%lld->%lld", rangeStart, rangeEnd);
+		rangeCnt++;
+		rangeStart = nums[0] + 1;
+	}
+	else if (rangeEnd < lower) {
+		rangeStart = lower - 1;
+	}
+
+	for (i = 1; i < numsSize; i++) {
+		if (rangeStart < lower) {
+			rangeStart = nums[i] + 1;
+		}
+		if ((rangeStart == nums[i]) || (nums[i] == (nums[i - 1] + 1))) {
+			rangeStart = nums[i] + 1;
+			continue;
+		}
+		rangeEnd = nums[i] - 1;
+		if (rangeEnd == rangeStart) {
+			missingRange[rangeCnt] = (char*)malloc(sizeof(char) * 20);
+			sprintf(missingRange[rangeCnt], "%lld", rangeEnd);
+			rangeCnt++;
+		}
+		else if (rangeEnd > rangeStart) {
+			missingRange[rangeCnt] = (char*)malloc(sizeof(char) * 20);
+			sprintf(missingRange[rangeCnt], "%lld->%lld", rangeStart, rangeEnd);
+			rangeCnt++;
+		}
+		rangeStart = nums[i] + 1;
+	}
+	if (nums[numsSize - 1] < upper) {
+		rangeStart = nums[numsSize - 1] + 1;
+		rangeEnd = upper;
+		if (rangeEnd == rangeStart) {
+			missingRange[rangeCnt] = (char*)malloc(sizeof(char) * 20);
+			sprintf(missingRange[rangeCnt], "%lld", rangeEnd);
+			rangeCnt++;
+		}
+		else if (rangeEnd > rangeStart) {
+			missingRange[rangeCnt] = (char*)malloc(sizeof(char) * 20);
+			sprintf(missingRange[rangeCnt], "%lld->%lld", rangeStart, rangeEnd);
+			rangeCnt++;
+		}
+	}
+
+	*returnSize = rangeCnt;
+	return missingRange;
+}
+
+int maxSubArrayLen(int* nums, int numsSize, int k) {
+	int total = 0;
+	int i = 0;
+	int len = numsSize;
+	int start = 0;
+	int sum = 0;
+	total = 0;
+	for (i = 0; i < len; i++) {
+		total += nums[i];
+	}
+	if (total == k) {
+		return len;
+	}
+
+	while (len > 1) {
+		total -= nums[len - 1];
+		len--;
+		sum = total;
+		if (sum == k) {
+			return len;
+		}
+		start = 1;
+		while ((start + len) <= numsSize) {
+			sum -= nums[start - 1];
+			sum += nums[start + len - 1];
+			if (sum == k) {
+				return len;
+			}
+			start++;
+		}
+	}
+
+	return 0;
+}
+
+int calcSize(int* height, int leftPos, int rightPos) {
+	int size = 0;
+	int i = 0;
+	int edge = 0;
+	if (height[leftPos] < height[rightPos]) {
+		for (i = leftPos + 1; i < rightPos; i++) {
+			size += height[leftPos] - height[i];
+		}
+	}
+	else {
+		edge = leftPos;
+		while ((height[edge + 1] <= height[edge]) && (height[edge + 1] > height[rightPos])) {
+			edge++;
+		}
+		for (i = edge + 1; i < rightPos; i++) {
+			size += height[rightPos] - height[i];
+		}
+	}
+	return size;
+}
+
+int trap(int* height, int heightSize) {
+	int total = 0;
+	int i = 0;
+	int leftPos = 0;
+	int leftHeight = 0;
+	int bottomPos = 0;
+	int bottomHeight = 0;
+	int rightHeight = 0;
+	int rightPos = 0;
+	int size = 0;
+	if (heightSize == 0) {
+		return 0;
+	}
+	leftHeight = height[0];
+	bottomHeight = height[0];
+	for (i = 1; i < heightSize; i++) {
+		if ((height[i] < bottomHeight) || ((bottomPos < leftPos) && (height[i] < leftHeight))) {
+			bottomHeight = height[i];
+			bottomPos = i;
+		}
+		if ((height[i] > bottomHeight) && (leftHeight > bottomHeight) && (leftPos < bottomPos)) {
+			size = calcSize(height, leftPos, i);
+			rightHeight = height[i];
+			rightPos = i;
+		}
+		if (height[i] >= leftHeight) {
+			leftHeight = height[i];
+			leftPos = i;
+			total += size;
+			size = 0;
+		}
+		else if (height[i] < rightHeight) {
+			total += size;
+			size = 0;
+			leftHeight = rightHeight;
+			leftPos = rightPos;
+		}
+	}
+	total += size;
+	return total;
+}
+
+
+TEST_F(ExamCodeTest, trap_test0) {
+	int height[] = { 0,1,0,2,1,0,1,3,2,1,2,1 };
+	int total = trap(height, sizeof(height) / sizeof(height[0]));
+	EXPECT_EQ(total, 6);
+}
+
+TEST_F(ExamCodeTest, trap_test1) {
+	int height[] = { 5, 4, 1, 2 };
+	int total = trap(height, sizeof(height) / sizeof(height[0]));
+	EXPECT_EQ(total, 1);
+}
+
+TEST_F(ExamCodeTest, trap_test2) {
+	int height[] = { 4,2,0,3,2,5 };
+	int total = trap(height, sizeof(height) / sizeof(height[0]));
+	EXPECT_EQ(total, 9);
+}
+
+TEST_F(ExamCodeTest, trap_test3) {
+	int height[] = { 5,5,1,7,1,1,5,2,7,6 };
+	int total = trap(height, sizeof(height) / sizeof(height[0]));
+	EXPECT_EQ(total, 23);
+}
+
+TEST_F(ExamCodeTest, trap_test4) {
+	int height[] = { 4,3,3,9,3,0,9,2,8,3 };
+	int total = trap(height, sizeof(height) / sizeof(height[0]));
+	EXPECT_EQ(total, 23);
 }

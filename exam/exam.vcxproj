@@ -155,6 +155,7 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="candy.cpp" />
     <ClCompile Include="exam.cpp" />
     <ClCompile Include="maxSubArrayLen.cpp" />
     <ClCompile Include="pch.cpp">

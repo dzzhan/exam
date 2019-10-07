@@ -577,8 +577,42 @@ int romanChar2Int(char c) {
 }
 
 int romanToInt(char * s) {
-
-	return 0;
+	int val = 0;
+	int len = strlen(s);
+	int i = 0;
+	for (i = 0; i < len - 1; i++) {
+		if ((s[i] == 'I') && (s[i + 1] == 'V')) {
+			val += 4;
+			i++;
+		}
+		else if ((s[i] == 'I') && (s[i + 1] == 'X')) {
+			val += 9;
+			i++;
+		}
+		else if ((s[i] == 'X') && (s[i + 1] == 'L')) {
+			val += 40;
+			i++;
+		}
+		else if ((s[i] == 'X') && (s[i + 1] == 'C')) {
+			val += 90;
+			i++;
+		}
+		else if ((s[i] == 'C') && (s[i + 1] == 'D')) {
+			val += 400;
+			i++;
+		}
+		else if ((s[i] == 'C') && (s[i + 1] == 'M')) {
+			val += 900;
+			i++;
+		}
+		else {
+			val += romanChar2Int(s[i]);
+		}
+	}
+	if (i < len) {
+		val += romanChar2Int(s[i]);
+	}
+	return val;
 }
 
 TEST_F(ExamCodeTest, romaToInt_test0) {

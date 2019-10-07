@@ -1,0 +1,5 @@
+Debug
+/.vs
+/gtest/project/*.user
+/exam/*.user
+/gtest/project/*.lib

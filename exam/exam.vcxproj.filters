@@ -26,5 +26,14 @@
     <ClCompile Include="exam.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="romanToInt.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="trap.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="maxSubArrayLen.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

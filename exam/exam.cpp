@@ -550,3 +550,63 @@ TEST_F(ExamCodeTest, trap_test6) {
 	int total = trap(height, sizeof(height) / sizeof(height[0]));
 	EXPECT_EQ(total, 3);
 }
+
+int romanChar2Int(char c) {
+	if (c == 'I') {
+		return 1;
+	}
+	else if (c == 'V') {
+		return 5;
+	}
+	else if (c == 'X') {
+		return 10;
+	}
+	else if (c == 'L') {
+		return 50;
+	}
+	else if (c == 'C') {
+		return 100;
+	}
+	else if (c == 'D') {
+		return 500;
+	}
+	else if (c == 'M') {
+		return 1000;
+	}
+	return 0;
+}
+
+int romanToInt(char * s) {
+
+	return 0;
+}
+
+TEST_F(ExamCodeTest, romaToInt_test0) {
+	char s[] = { "III" };
+	int val = romanToInt(s);
+	EXPECT_EQ(3, val);
+}
+
+TEST_F(ExamCodeTest, romaToInt_test1) {
+	char s[] = { "IV" };
+	int val = romanToInt(s);
+	EXPECT_EQ(4, val);
+}
+
+TEST_F(ExamCodeTest, romaToInt_test2) {
+	char s[] = { "IX" };
+	int val = romanToInt(s);
+	EXPECT_EQ(9, val);
+}
+
+TEST_F(ExamCodeTest, romaToInt_test3) {
+	char s[] = { "LVIII" };
+	int val = romanToInt(s);
+	EXPECT_EQ(58, val);
+}
+
+TEST_F(ExamCodeTest, romaToInt_test4) {
+	char s[] = { "MCMXCIV" };
+	int val = romanToInt(s);
+	EXPECT_EQ(1994, val);
+}

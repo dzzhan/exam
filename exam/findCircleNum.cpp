@@ -4,7 +4,7 @@ void ColorBlock(int** M, int MSize, int MColSize, int x, int y)
 {
 	int i = 0;
 
-	//找同一行连续的1
+	//向右找同一行
 	for (i = y + 1; i < MColSize; i++) {
 		if (M[x][i] == 1) {
 			M[x][i] = 2;
@@ -12,8 +12,24 @@ void ColorBlock(int** M, int MSize, int MColSize, int x, int y)
 		}
 	}
 
-	// 找同一列连续的1
+	//向左找同一行
+	for (i = y - 1; i >= 0; i--) {
+		if (M[x][i] == 1) {
+			M[x][i] = 2;
+			ColorBlock(M, MSize, MColSize, x, i);
+		}
+	}
+
+	// 向下找同一列
 	for (i = x + 1; i < MSize; i++) {
+		if (M[i][y] == 1) {
+			M[i][y] = 2;
+			ColorBlock(M, MSize, MColSize, i, y);
+		}
+	}
+
+	// 向上找同一列
+	for (i = x - 1; i >= 0; i--) {
 		if (M[i][y] == 1) {
 			M[i][y] = 2;
 			ColorBlock(M, MSize, MColSize, i, y);
@@ -124,11 +140,11 @@ TEST_F(ExamCodeTest, findCircleNumTest2) {
 	EXPECT_EQ(num, 3);
 }
 
-/*
-[[1,0,0,1],
- [0,1,1,0],
- [0,1,1,1],
- [1,0,1,1]]
+/* A B C D
+[A[1,0,0,1],
+ B[0,1,1,0],
+ C[0,1,1,1],
+ D[1,0,1,1]]
 */
 TEST_F(ExamCodeTest, findCircleNumTest3) {
 	const int N = 4;

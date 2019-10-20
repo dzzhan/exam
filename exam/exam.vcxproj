@@ -167,6 +167,7 @@
     </ClCompile>
     <ClCompile Include="romanToInt.cpp" />
     <ClCompile Include="trap.cpp" />
+    <ClCompile Include="WordAbbrv.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\gtest\project\gtest.vcxproj">

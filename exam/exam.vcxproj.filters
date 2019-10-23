@@ -44,5 +44,8 @@
     <ClCompile Include="WordAbbrv.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="minStack.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

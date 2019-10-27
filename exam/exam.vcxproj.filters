@@ -47,5 +47,11 @@
     <ClCompile Include="minStack.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="reconstructQueue.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="minLenEncoding.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

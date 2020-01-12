@@ -3,3 +3,4 @@ Debug
 /gtest/project/*.user
 /exam/*.user
 /gtest/project/*.lib
+/build
